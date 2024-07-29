@@ -1,0 +1,14 @@
+﻿@model List<Product>
+
+
+    <h1>All Products</h1>
+@foreach(var item in Model)
+{
+    <p>Id: @item.Id</p>
+    <p>Name: @item.Name</p>
+    <p>Description: @item.Description</p>
+    <p>Discount: @item.Discount</p>
+    <p>Price: @item.Price</p>
+    <img src="@item.ImageLink" />
+    <hr />
+}
