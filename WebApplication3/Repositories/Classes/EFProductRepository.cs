@@ -24,10 +24,29 @@ namespace WebApplication3.Repositories.Classes
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteAsync(Product product)
+        {
+            
+             _context.Remove(product);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<List<Product>> GetAllAsync(string key = "")
         {
             var keyCode = key.Trim().ToLower();
             return key==""?await _context.Products.ToListAsync(): await _context.Products.Where(i=>i.Name.ToLower().Contains(keyCode)).ToListAsync();   
+        }
+
+        public async Task<Product> GetByIdAsync(int id)
+        {
+           return id==null?new Product() :  await _context.Products.FindAsync(id);
+        }
+
+        public async Task UpdateAsync(Product product, int id)
+        {
+           var item =await _context.Products.FindAsync(id);
+            _context.Products.Update(item);
+            await _context.SaveChangesAsync();
         }
     }
 }

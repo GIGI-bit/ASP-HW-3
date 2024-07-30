@@ -1,14 +1,23 @@
-﻿@model List<Product>
+﻿@model ProductListViewModel
 
 
     <h1>All Products</h1>
-@foreach(var item in Model)
+@foreach(var item in Model.Products)
 {
-    <p>Id: @item.Id</p>
-    <p>Name: @item.Name</p>
-    <p>Description: @item.Description</p>
-    <p>Discount: @item.Discount</p>
-    <p>Price: @item.Price</p>
-    <img src="@item.ImageLink" />
+    <div class="d-flex justify-content-between mt-2" style="width:30vw" >
+        <div> <img src="@item.ImageLink" style="width:15vw;height:20vh;"/></div>
+        <div>
+            <p>Id: @item.Id</p>
+            <p>Name: @item.Name</p>
+            <p>Description: @item.Description</p>
+            <p>Discount: @item.Discount</p>
+            @if (item.Discount != 0)
+            {
+                <p>Price: <del style="color:red">@item.Price</del> <ins>@item.CalculateDiscount()</ins></p>
+            }
+        </div>
+        <div class="d-flex" style="gap:1vw"><div><a asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a></div><div><a class="btn btn-outline-warning" asp-controller="Product" asp-route-id="@item.Id" asp-action="Edit">Edit</a></div></div>
+    </div>
+   
     <hr />
 }

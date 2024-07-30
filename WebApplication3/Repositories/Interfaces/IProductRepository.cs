@@ -8,5 +8,10 @@ namespace WebApplication3.Repositories.Interfaces
     {
         Task<List<Product>> GetAllAsync(string key="");
         Task AddAsync(Product product);
+        Task<Product> GetByIdAsync(int id);
+        Task DeleteAsync(Product product);
+
+        Task UpdateAsync(Product product, int id);
+
     }
 }

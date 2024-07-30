@@ -19,9 +19,25 @@ namespace WebApplication3.Services
           await _productRepository.AddAsync(product);
         }
 
+        public async Task DeleteAsync(Product product)
+        {
+           await _productRepository.DeleteAsync(product);
+        }
+
+        public async Task<Product> GetById(int id)
+        {
+            return await _productRepository.GetByIdAsync(id);   
+        }
+
         public async Task<List<Product>> GetAllByKey(string key)
         {
             return await _productRepository.GetAllAsync(key);
+
+        }
+
+        public Task UpdateAsync(Product product, int id)
+        {
+           return _productRepository.UpdateAsync(product, id);
 
         }
     }

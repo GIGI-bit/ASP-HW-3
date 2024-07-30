@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
+using WebApplication3.Entities;
+using WebApplication3.Models;
 using WebApplication3.Services;
 
 namespace WebApplication3.Controllers
@@ -19,8 +22,8 @@ namespace WebApplication3.Controllers
         public async Task<ActionResult> Index(string key="")
         {
             var items=await _productService.GetAllByKey(key);
-
-            return View(items);
+            var vm =new ProductListViewModel { Products=items};
+            return View(vm);
         }
 
         // GET: ProductController/Details/5
@@ -32,64 +35,81 @@ namespace WebApplication3.Controllers
         // GET: ProductController/Create
         public ActionResult Create()
         {
-            return View();
+            var product = new ProductCreateViewModel
+            {
+                Product = new Product()
+            };
+
+            return View(product);
         }
 
         // POST: ProductController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(ProductCreateViewModel vm)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                await _productService.AddAsync(vm.Product);
+                return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+            else { return View(vm); }
         }
 
         // GET: ProductController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+            var product = await _productService.GetById(id);
+            if (product != null)
+            {
+                var vm = new ProductUpdateViewModel
+                {
+                    Product = product
+                };
+                return View(vm);
+
+            }
+            return RedirectToAction("Index");
         }
 
         // POST: ProductController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, ProductCreateViewModel vm)
         {
-            try
+            var item = await _productService.GetById(id);
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                if (item != null)
+                {
+                    item.Name = vm.Product.Name;
+                    item.Price = vm.Product.Price;
+                    item.Description = vm.Product.Description;
+                    item.ImageLink = vm.Product.ImageLink;
+                    item.Discount = vm.Product.Discount;
+
+                    await _productService.UpdateAsync(item,id);
+
+                    return RedirectToAction("Index");
+
+                }
+
+
             }
-            catch
-            {
-                return View();
-            }
+            return View(vm);
         }
 
         // GET: ProductController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return View();
+
+            var item = await _productService.GetById(id);
+        
+            await _productService.DeleteAsync(item);
+
+            return RedirectToAction("Index");
         }
 
-        // POST: ProductController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+  
     }
 }

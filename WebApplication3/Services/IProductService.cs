@@ -8,6 +8,8 @@ namespace WebApplication3.Services
     {
         Task<List<Product>> GetAllByKey(string key);
         Task AddAsync(Product product);
-
+        Task<Product> GetById(int id);
+        Task DeleteAsync(Product product);
+        Task UpdateAsync(Product product,int id);
     }
 }
